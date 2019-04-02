@@ -22,9 +22,11 @@ public class EurekaClientApplication {
 
     @Value("${server.port}")
     private String port;
+    @Value("${foo.version}")
+    private String version;
 
     @RequestMapping("/")
     public String healthy() {
-        return "i' ok, port: " + port;
+        return "i' ok, port: " + port + ", version: " + version;
     }
 }
