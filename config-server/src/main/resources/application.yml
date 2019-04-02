@@ -1,0 +1,18 @@
+server:
+  port: 8920
+spring:
+  application:
+    name: config-server
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/a807966224/sharp/
+          search-paths: config-server/src/main/resources/configs
+          username:
+          password:
+      label: master
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8900/eureka
