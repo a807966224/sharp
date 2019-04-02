@@ -1,2 +1,2 @@
-server:
-  port: 8911
+foo:
+  version: 1.0
