@@ -18,18 +18,34 @@
     </properties>
 
     <dependencies>
+        <!-- 简单的web支持 start -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-config-server</artifactId>
-        </dependency>
+        <!-- 简单的web支持 end -->
+
+        <!-- eureka client 客户端 start -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
         </dependency>
+        <!-- eureka client 客户端 end -->
+
+        <!-- 配置中心服务端 start -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-config-server</artifactId>
+        </dependency>
+        <!-- 配置中心服务端 end -->
+
+        <!-- 微服务链路追踪 start -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-zipkin</artifactId>
+        </dependency>
+        <!-- 微服务链路追踪 end -->
+
     </dependencies>
 
     <build>
