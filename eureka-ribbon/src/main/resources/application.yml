@@ -1,10 +1,15 @@
 server:
-  port: 8975
+  port: 8939
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8900/eureka
+
 spring:
+  application:
+    name: eureka-ribbon
   zipkin:
     base-url: http://localhost:9411
-  application:
-    name: client3
   cloud:
     bus:
       enabled: true
@@ -20,8 +25,3 @@ spring:
       web:
         exposure:
           include: "*"
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: http://localhost:8900/eureka
-

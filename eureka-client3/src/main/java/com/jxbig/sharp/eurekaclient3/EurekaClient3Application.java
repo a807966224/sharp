@@ -12,7 +12,7 @@ import org.springframework.web.client.RestTemplate;
 @SpringBootApplication
 @EnableEurekaClient
 @RestController
-@RequestMapping("/{request.prefix}")
+@RequestMapping("/${request.prefix}")
 public class EurekaClient3Application {
 
     public static void main(String[] args) {

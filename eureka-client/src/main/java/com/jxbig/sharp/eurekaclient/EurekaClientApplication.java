@@ -18,7 +18,7 @@ import org.springframework.web.client.RestTemplate;
 @RestController
 @EnableDiscoveryClient
 @RefreshScope
-@RequestMapping("/{request.prefix}")
+@RequestMapping("/${request.prefix}")
 public class EurekaClientApplication {
 
     public static void main(String[] args) {
