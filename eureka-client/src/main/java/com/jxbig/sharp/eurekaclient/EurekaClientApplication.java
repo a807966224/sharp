@@ -40,7 +40,7 @@ public class EurekaClientApplication {
 
     @RequestMapping("/oneHi")
     public String oneHi() {
-        return "i'm service-hi";
+        return "i'm service-hi, port: " + port;
     }
 
     @RequestMapping("/oneInfo")

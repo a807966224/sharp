@@ -13,7 +13,7 @@ public class TestService {
 
     @HystrixCommand(fallbackMethod = "oneHiError")
     public String oneHi() {
-        return restTemplate.getForObject("http://eureka-client/oneHi", String.class);
+        return restTemplate.getForObject("http://eureka-client/A/oneHi", String.class);
     }
     public String oneHiError() {
         return "oneHiError........";

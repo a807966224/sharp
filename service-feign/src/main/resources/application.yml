@@ -1,0 +1,20 @@
+server:
+  port: 8930
+
+spring:
+  application:
+    name: service-feign
+  cloud:
+    bus:
+      enabled: true
+      trace:
+        enabled: true
+    rabbitmq:
+      addresses: localhost
+      port: 5672
+      username: guest
+      password: guest
+
+feign:
+  hystrix:
+    enabled: true

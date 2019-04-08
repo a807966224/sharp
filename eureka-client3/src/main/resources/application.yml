@@ -10,18 +10,14 @@ spring:
       enabled: true
       trace:
         enabled: true
-    rabbitmq:
-      addresses: localhost
-      port: 5672
-      username: guest
-      password: guest
-  management:
-    endpoints:
-      web:
-        exposure:
-          include: "*"
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: http://localhost:8900/eureka
+  rabbitmq:
+    addresses: localhost
+    port: 5672
+    username: guest
+    password: guest
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
 
