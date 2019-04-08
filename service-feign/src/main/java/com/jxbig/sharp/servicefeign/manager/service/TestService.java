@@ -5,10 +5,10 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-@FeignClient(value = "eureka-client1", fallback = TestErrorServiceImpl.class)
+@FeignClient(value = "client3", fallback = TestErrorServiceImpl.class, path = "/${request.prefix}")
 public interface TestService {
 
-    @RequestMapping(value = "twoHi", method = RequestMethod.GET)
+    @RequestMapping(value = "/twoHi", method = RequestMethod.GET)
     String twoHi();
 
 }

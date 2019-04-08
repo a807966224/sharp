@@ -12,8 +12,8 @@ public class TestRpc {
     @Autowired
     private TestService testService;
 
-    @RequestMapping("/oneHi")
-    public String oneHi() {
+    @RequestMapping("/twoHi")
+    public String twoHi() {
         return testService.twoHi();
     }
 
