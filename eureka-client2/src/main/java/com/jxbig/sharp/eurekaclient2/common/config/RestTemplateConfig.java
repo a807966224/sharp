@@ -1,4 +1,4 @@
-package com.jxbig.sharp.eurekaclient1.common.config;
+package com.jxbig.sharp.eurekaclient2.common.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;

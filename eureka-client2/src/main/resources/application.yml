@@ -1,0 +1,26 @@
+server:
+  port: 8970
+spring:
+  zipkin:
+    base-url: http://localhost:9411
+  application:
+    name: client2
+#  cloud:
+#    bus:
+#      enabled: true
+#      trace:
+#        enabled: true
+#    rabbitmq:
+#      addresses: localhost
+#      port: 5672
+#      username: guest
+#      password: guest
+  management:
+    endpoints:
+      web:
+        exposure:
+          include: "*"
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8900/eureka

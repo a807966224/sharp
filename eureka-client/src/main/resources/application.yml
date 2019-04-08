@@ -1,14 +1,18 @@
+server:
+  port: 8911
 spring:
-  cloud:
-    bus:
-      enabled: true
-      trace:
-        enabled: true
-  rabbitmq:
-    addresses: localhost
-    port: 5672
-    username: guest
-    password: guest
+  application:
+    name: eureka-client
+#  cloud:
+#    bus:
+#      enabled: true
+#      trace:
+#        enabled: true
+#  rabbitmq:
+#    addresses: localhost
+#    port: 5672
+#    username: guest
+#    password: guest
 management:
   endpoints:
     web:

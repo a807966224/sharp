@@ -8,9 +8,9 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
     <groupId>com.jxbig.sharp</groupId>
-    <artifactId>config-server</artifactId>
+    <artifactId>eureka-client2</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>config-server</name>
+    <name>eureka-client2</name>
     <description>Demo project for Spring Boot</description>
 
     <properties>
@@ -18,27 +18,32 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
+        </dependency>
         <!-- 简单的web支持 start -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <!-- 简单的web支持 end -->
-
-        <!-- eureka client 客户端 start -->
+        <!-- 微服务链路追踪 start -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+            <artifactId>spring-cloud-starter-zipkin</artifactId>
         </dependency>
-        <!-- eureka client 客户端 end -->
-
-        <!-- 配置中心服务端 start -->
-        <dependency>
+        <!-- 微服务链路追踪 end -->
+        <!-- rabbit支持，cloud消息总线支持 start -->
+        <!--<dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-config-server</artifactId>
+            <artifactId>spring-cloud-starter-bus-amqp</artifactId>
         </dependency>
-        <!-- 配置中心服务端 end -->
-
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>-->
+        <!-- rabbit支持，cloud消息总线支持 end -->
     </dependencies>
 
     <build>
