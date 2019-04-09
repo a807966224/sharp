@@ -5,6 +5,6 @@ request:
 mon:
   database: test
   host: localhost
-  port:
+  port: 27017
   username:
   password:
