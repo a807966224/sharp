@@ -1,17 +1,23 @@
 server:
   port: 8940
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: http://localhost:8900/eureka
 spring:
   application:
     name: service-zuul
+  cloud:
+    bus:
+      enabled: true
+      trace:
+        enabled: true
+  rabbitmq:
+    addresses: localhost
+    port: 5672
+    username: guest
+    password: guest
 zuul:
   routes:
     api-a:
-      path: /A/**
+      path: /api-a/**
       serviceId: eureka-ribbon
     api-b:
-      path: /B/**
+      path: /api-b/**
       serviceId: service-feign
