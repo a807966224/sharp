@@ -1,0 +1,279 @@
+1. 父pom
+	parent： spring-boot-starter-parent 2.0.3.RELEASE
+	dependency: spring-cloud-dependencies Finchley.RELEASE
+2. 子Module
+	EUREKA_SERVER	
+		创建module, 指定groupId、artifactId, 选择spring init初始化，选择cloud discovery->eureka server进行创建子模块，整理子模块pom，保留parent和spring-cloud-starter-netflix-eureka-server依赖，其它删除
+		高可用组件，客户端上线后发送心跳至服务端，默认eureka-server也是客户端，通过eureka.client.registerWithEureka：false和fetchRegistry：false来表明自己是一个eureka server.
+		启动类注解 @EnableEurekaServer
+	EUREKA_CLIENT	
+		创建module, 指定groupId、artifactId, 选择spring init初始化，选择cloud discovery->eureka server进行创建子模块，整理子模块pom，保留parent和spring-cloud-starter-netflix-eureka-server、spring-boot-starter-web依赖，其它删除
+		sprint.application.name是服务调用的标志
+		
+3. 负载均衡服务
+	ribbon模块
+		创建module, 指定groupId、artifactId, 选择spring init初始化，选择cloud discovery->eureka server进行创建子模块，整理子模块pom，
+		保留parent和spring-cloud-starter-netflix-eureka-server、spring-boot-starter-web、spring-cloud-starter-netflix-ribbon依赖，其它删除
+		IOC注入RestTemplate，通过在service中调用提供服务端的接口用来消费，达到负载均衡的效果
+		@Bean
+		@LoadBalanced
+		RestTemplate restTemplate() {
+			return new RestTemplate();
+		}
+		控制器上增加@EnableEurekaClient @EnableDiscoveryClient注解
+		
+4. Feign（基于接口的注解、整合ribbon具有负载均衡能力、整合了Hystrix具有熔断能力）
+	创建module, 指定groupId、artifactId, 选择spring init初始化，选择cloud discovery->eureka server进行创建子模块，整理子模块pom，
+	保留parent和spring-cloud-starter-netflix-eureka-server、spring-boot-starter-web、spring-cloud-starter-openfeign依赖，其它删除
+	启动类注解： @EnableFeignClients @EnableEurekaClient @EnableDiscoveryClient
+	业务类注解：
+		@FeignClient(value = "client-1")
+		public interface TestService {
+			@RequestMapping(value = "hi", method = RequestMethod.GET)
+			String hi(@RequestParam String name);
+		}
+5. 断路器
+	Ribbon使用
+		pom中增加spring-cloud-starter-netflix-hystrix依赖
+		启动类注解：@EnableHystrix
+		业务类注解：@HystrixCommand(fallbackMethod = "hiError")，指定回调方法....固定返回一个人类可读值，当服务宕机，可供查看
+		
+	Feign使用（如果同时需要调用多个服务的话，怎么办？）
+		配置文件修改
+		feign:
+		  hystrix:
+			enabled: true
+		类注解： @FeignClient(value = "client-1", fallback = TestErrorService.class)， 重写失败的类方法，返回一个默认值
+6. 路由器
+	Zuul路由器使用
+		按照eureka-client进行创建子模块， pom中增加spring-cloud-starter-netflix-zuul依赖
+		配置文件修改
+		zuul:
+		  routes:
+			api-a:
+			  path: /api-a/**
+			  serviceId: service-ribbon
+			api-b:
+			  path: /api-b/**
+			  serviceId: service-feign
+		启动类注解： @EnableEurekaClient
+					@EnableDiscoveryClient
+					@EnableZuulProxy
+	Zuul过滤器使用
+		注入一个组件供spring扫描继承ZuulFilter类
+			filterType: pre post error routing
+			filterOrder: 顺序
+			shouldFilter: false 不进行过滤 true 过滤
+			run: 过滤器业务实现
+7. 配置文件服务端与客户端
+	服务端：
+		创建github配置文件项目，其中文件夹比如respo， 下面在创建一些配置文件，比如
+			固有：config-client-dev.properties
+			其它配置文件: zuul-dev.properties
+		创建config-server服务， pom新增spring-cloud-config-server和spring-boot-starter-web依赖
+		server:
+		  port: 8950
+		spring:
+		  application:
+			name: config-server
+		  cloud:
+			config:
+			  server:
+				git:
+				  uri: https://github.com/forezp/SpringcloudConfig/
+				  search-paths: respo
+				  username:
+				  password:
+			  label: master
+		启动类注解： @EnableConfigServer开启配置文件服务支持
+		启动后即可通过浏览器访问github仓库中的配置文件内容
+			http://ip:port/foo/dev(foo是config-client-dev.properties中配置的内容)
+			http://ip:port/zuul/dev（访问github仓库中zuul-dev.properties内容）
+	客户端：
+		创建子modulle, pom中：spring-boot-starter-web 和 spring-cloud-starter-config依赖支持
+		配置文件：bootstrap.properties
+			spring.application.name=config-client
+			spring.cloud.config.label=master
+			spring.cloud.config.profile=dev
+			spring.cloud.config.uri=http://localhost:8950/
+			server.port=8960
+		由于在github的config-client-dev.properties文件中定义： foo = foo version 12这个参数
+		所以可以在客户端通过IOC注入foo到类中， 
+		@Value("${foo}")
+		String foo;
+8. 高可用的分布式配置中心
+		配置文件服务端：加入eureka-client依赖，spring-cloud-starter-netflix-eureka-server
+						启动类注解：@EnableEurekaClient
+						配置文件：eureka:
+									  client:
+										serviceUrl:
+										  defaultZone: http://localhost:8900/eureka
+		配置文件客户端：加入eureka-client依赖，spring-cloud-starter-netflix-eureka-client
+						配置文件内容，按照服务名称寻找服务
+						spring.application.name=config-client
+						spring.cloud.config.label=master
+						spring.cloud.config.profile=dev
+						#spring.cloud.config.uri=http://localhost:8950/
+						server.port=8960
+
+						eureka.client.serviceUrl.defaultZone=http://localhost:8900/eureka/
+						spring.cloud.config.discovery.enabled=true
+						spring.cloud.config.discovery.service-id=config-server
+						启动类注解：@EnableEurekaClient
+9. RabbitMq安装与使用（https://www.rabbitmq.com/getstarted.html）
+	下载安装ErLang:http://www.erlang.org/downloads
+	修改计算机名称为大写
+	安装RabbitMq
+	window64机器中安装环境
+		切换至rabbit二进制命令下：cd F:\Program Files\RabbitMQ Server\rabbitmq_server-3.7.14\sbin
+									查看安装状态：rabbitmqctl.bat status
+									开启浏览器管理平台：rabbitmq-plugins.bat enable rabbitmq_management
+									查看用户：rabbitmqctl.bat list_users
+	通过http://localhost:15672访问管理界面，默认用户名密码均为guest
+	
+	RabbitMQ共六种类型：
+		一对一
+		一对多
+		广播、订阅
+		路由
+		主题
+		RPC调用
+10. 消息总线
+	分布式的节点用轻量级的消息代理连接起来，可用于广播配置文件的更改或服务之间的通讯，也可用于监控。
+		配置文件修改时，通知微服务架构配置文件的更改
+		config-client服务模块中加入消息总线依赖：spring-cloud-starter-bus-amqp和spring-boot-starter-actuator
+		在application.yml中加入消息总线、rabbitmq配置
+		spring:
+		  cloud:
+			bus:
+			  enabled: true
+			  trace:
+				enabled: true
+		  rabbitmq:
+			addresses: localhost
+			port: 15672
+			username: guest
+			password: guest
+		management:
+		  endpoint:
+			web:
+			  exposure:
+				include: bus-refresh
+		启动类注解：@EnableDiscoveryClient、@RefreshScope
+		POST请求 http://localhost:8960/actuator/bus-refresh即可刷新配置文件
+11. zipkin-server 服务链路追踪
+		下载后 https://dl.bintray.com/openzipkin/maven/io/zipkin/java/zipkin-server/2.12.6/ java -jar *.jar运行，访问http://localhost:9411查看管理页面
+		创建子模块 新增依赖：spring-cloud-starter-zipkin、spring-boot-starter-web
+		修改配置文件内容：
+		server:
+		  port: 8971
+		spring:
+		  zipkin:
+			base-url: http://localhost:9411
+		  application:
+			name: service-zipkin-two
+		分别创建两个项目，启动类中分别新增两个请求方法，使用RestTemplate进行请求，在相互请求后，使用zipkin管理页面查看服务依赖情况
+12. Eureka-server注册中心集群，达到高可用
+	修改原eureka-server项目，新增applection-peer1.yml/application-peer2.yml文件，其中内容大致如下，两者相反
+	server:
+	  port: 8900
+	spring:
+	  profiles: peer1
+	eureka:
+	  instance:
+		hostname: peer1
+	  client:
+		serviceUrl:
+		  defaultZone: http://peer2:8909/eureka
+	修改/etc/hosts
+		C:\Windows\System32\drivers\etc
+		c:/windows/systems/drivers/etc/hosts
+		下的hosts文件，添加如下内容
+		127.0.0.1 peer1
+		127.0.0.1 peer2
+	java -jar *.jqr --spring.profiles.active=peer1
+13. 断路器监控（利用Hystrix Dashboard去监控断路器的Hystrix command）
+	主要依赖：spring-boot-starter-actuator
+			spring-cloud-starter-netflix-hystrix
+			spring-cloud-starter-netflix-hystrix-dashboard
+	配置文件修改：
+		#解决http://localhost:8910/actuator/hystrix.stream无法访问的问题
+		management:
+		  endpoints:
+			web:
+			  exposure:
+				include: "*"
+			  cors:
+				allowed-origins: "*"
+				allowed-methods: "*"
+	启动类注解：
+		@EnableDiscoveryClient
+		@EnableHystrix
+		@EnableHystrixDashboard
+		@EnableCircuitBreaker
+	熔断方法注解:
+		@HystrixCommand(fallbackMethod = "hiError")，指定回调方法，一般方法都是立即返回一个固定的提示信息或者业务错误的逻辑，避免出现一个服务挂了
+	此时： 访问：http://localhost:8910/actuator/hystrix.stream查看方法流调用，正常情况一直ping，直到有熔断注解的方法被执行时，会返回一些数据
+			访问管理查看页面：http://localhost:8910/hystrix，添加http://localhost:8910/actuator/hystrix.stream、延时参数、统计名称，点击Monitor Stream进行统计
+14. 断路器聚合监控
+	新建子模块，添加主要依赖：
+		spring-cloud-starter-netflix-eureka-client
+		spring-boot-starter-actuator
+		spring-cloud-starter-netflix-hystrix
+		spring-cloud-starter-netflix-hystrix-dashboard
+		spring-cloud-starter-netflix-turbine
+	配置文件：
+		server:
+		  port: 8980
+		spring:
+		  application:
+			name: service-turbine
+		eureka:
+		  client:
+			serviceUrl:
+			  defaultZone: http://localhost:8900/eureka
+		#解决http://localhost:8910/actuator/hystrix.stream无法访问的问题
+		management:
+		  endpoints:
+			web:
+			  exposure:
+				include: "*"
+			  cors:
+				allowed-origins: "*"
+				allowed-methods: "*"
+		turbine:
+		  app-config: client-1, client-0
+		  aggregator:
+			cluster-config: default
+		  clusterNameExpression: new String("default")
+		  combineHost: true
+		  instanceUrlSuffix:
+			default: actuator/hystrix.stream
+	启动类注解：
+		@EnableTurbine
+		@EnableDiscoveryClient
+		@EnableEurekaClient
+		@EnableHystrix
+		@EnableHystrixDashboard
+		@EnableCircuitBreaker
+	配置文件中声明了两个统计服务节点，也就是application.name，先启动两个服务节点，通过注入中心进行服务管理，然后启动turbine断路器聚合监控服务
+	断路器聚合监控服务：http://localhost:8980/turbine.stream
+	调用客户端服务方法，会发现有返回数据，查看http://localhost:8980/hystrix进行配置，查看多个服务的断路器情况
+	
+	
+	
+		
+		
+	
+	
+		
+	
+		
+
+		
+			
+		
+	
+			
+		
+		

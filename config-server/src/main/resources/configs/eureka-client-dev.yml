@@ -2,3 +2,9 @@ sharp:
   version: 3.0
 request:
   prefix: A
+mon:
+  database: test
+  host: localhost
+  port:
+  username:
+  password:

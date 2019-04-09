@@ -57,6 +57,13 @@
         </dependency>
         <!-- 微服务链路追踪 end -->
 
+        <!-- MongoDB支持 start -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-mongodb</artifactId>
+        </dependency>
+        <!-- MongoDB支持 end -->
+
     </dependencies>
 
     <build>
