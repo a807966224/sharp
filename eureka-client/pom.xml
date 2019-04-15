@@ -18,6 +18,14 @@
     </properties>
 
     <dependencies>
+        <!-- 通用插件支持 start -->
+        <dependency>
+            <groupId>com.jxbig.sharp</groupId>
+            <artifactId>server-common</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <!-- 通用插件支持 end -->
+
         <!-- 简单的web支持 start -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -63,6 +71,13 @@
             <artifactId>spring-boot-starter-data-mongodb</artifactId>
         </dependency>
         <!-- MongoDB支持 end -->
+
+        <!-- WebSocket支持 start-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
+        </dependency>
+        <!-- WebSocket支持 end-->
 
     </dependencies>
 

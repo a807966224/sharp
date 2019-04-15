@@ -5,6 +5,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>rabbit-mq</module>
+        <module>server-common</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -30,6 +31,19 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+        </dependency>
+        <!-- 通用插件支持 start -->
+        <dependency>
+            <groupId>com.jxbig.sharp</groupId>
+            <artifactId>server-common</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <!-- 通用插件支持 end -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.2</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
