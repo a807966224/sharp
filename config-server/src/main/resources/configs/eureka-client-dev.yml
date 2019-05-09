@@ -2,9 +2,27 @@ sharp:
   version: 3.0
 request:
   prefix: A
-mon:
+mongo:
   database: test
-  host: 10.220.115.21
-  port: 27017
+  address: 10.220.115.21:27017
+  replica-set: reolicaName
   username: test
   password: 123456
+  options:
+    min-connections-per-host: 20
+    max-connections-per-host: 20
+    threads-allowed-to-block-for-connection-multiplier: 5
+    server-selection-timeout: 30000
+    max-wait-time: 120000
+    max-connection-idel-time: 0
+    max-connection-life-time: 0
+    connect-timeout: 0
+    socket-keep-alive: false
+    ssl-enabled: false
+    ssl-invalid-host-name-allowed: false
+    always-use-m-beans: false
+    heartbeat-socket-timeout: 20000
+    heartbeat-connect-timeout: 20000
+    min-heartbeat-frequency: 500
+    heartbeat-frequency: 10000
+    local-thrshold: 15
