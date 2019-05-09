@@ -19,7 +19,6 @@ public class MongoData {
 
     @Autowired
     MongodbProperties config;
-    private MongoData() {}
 
     @Bean
     public MongoClient mongoClient() {
