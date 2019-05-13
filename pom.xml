@@ -6,6 +6,15 @@
     <modules>
         <module>rabbit-mq</module>
         <module>server-common</module>
+        <module>eureka-client</module>
+        <module>config-server</module>
+        <module>eureka-client1</module>
+        <module>eureka-client2</module>
+        <module>eureka-client3</module>
+        <module>eureka-ribbon</module>
+        <module>eureka-server</module>
+        <module>service-feign</module>
+        <module>service-zuul</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -33,11 +42,11 @@
             <scope>test</scope>
         </dependency>
         <!-- 通用插件支持 start -->
-        <dependency>
-            <groupId>com.jxbig.sharp</groupId>
-            <artifactId>server-common</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.jxbig.sharp</groupId>-->
+            <!--<artifactId>server-common</artifactId>-->
+            <!--<version>0.0.1-SNAPSHOT</version>-->
+        <!--</dependency>-->
         <!-- 通用插件支持 end -->
         <dependency>
             <groupId>org.projectlombok</groupId>
