@@ -15,6 +15,8 @@ public class Send {
     public static void main(String[] argv) throws Exception {
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost("10.220.115.21");
+        factory.setUsername("scott");
+        factory.setPassword("scott");
         try (Connection connection = factory.newConnection();
              Channel channel = connection.createChannel()) {
             channel.queueDeclare(QUEUE_NAME, false, false, false, null);
